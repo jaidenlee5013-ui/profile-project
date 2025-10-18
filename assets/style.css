@@ -1,0 +1,70 @@
+/* Global reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'poppins', sans-serif;
+    background-color: #afc464;
+}
+
+header {
+    background-color: #dcbb4c;
+    color: #df4a14f6;
+    padding: 10px;
+    text-align: center;
+}
+nav a{
+    text-decoration: none;
+    color: #f44d4d;
+    margin-right:  10px;
+
+}
+.profile{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px ;
+    animation: fade-in 2s ease-in;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.profile img {
+    width: 100px;
+    height: 100px;
+    background-position: top center;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    border: 3px solid #333;
+    animation: float 3s ease-in-out infinite;
+}.profile .info h2 {
+   color: #333;
+    text-align: center;
+}
+.card{
+    background-color: #d85454;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 650px;
+    border-radius: 8px;
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.1);
+
+}
+.card:hover{
+    transform: scale(1.05);
+}
+footer {
+    background-color: #dcbb4c;
+    color: #333;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
