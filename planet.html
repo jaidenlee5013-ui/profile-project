@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Solar System Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0b0c2a;
+            color: white;
+            margin: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.light-mode {
+            background: #f0f0f0;
+            color: #222;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a1c3b;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-title {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .toggle-mode {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: white;
+            cursor: pointer;
+        }
+        body.light-mode .navbar {
+            background: #ddd;
+        }
+        body.light-mode .toggle-mode {
+            color: #222;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            /* Note: Replaced Unsplash URL with a generic space image for better cross-device loading */
+            background: url('https://cdn.pixabay.com/photo/2016/10/20/18/35/earth-1756274_960_720.jpg') no-repeat center/cover;
+            color: white;
+        }
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+        }
+
+        /* Planet Grid */
+        .planet-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 40px;
+            justify-content: center;
+        }
+        .planet-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .planet-card:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.15); /* Slight hover effect */
+        }
+        .planet-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5); /* Added border for definition */
+        }
+        body.light-mode .planet-card {
+            background: rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Article View */
+        .article-view {
+            display: none; /* Crucial: Starts hidden */
+            padding: 40px;
+            max-width: 700px;
+            margin: auto;
+        }
+        .article-view h2 {
+            font-size: 2.5em;
+            border-bottom: 2px solid #5a5a8a;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .article-view p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            margin-top: 30px;
+            background: #007bff; /* Brighter color for visibility */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
+        body.light-mode .back-btn {
+            background: #222;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .planet-grid {
+                padding: 20px;
+            }
+            .planet-card {
+                width: calc(50% - 20px); /* Two cards per row on small screens */
+            }
+            .article-view {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-title">🌌 **Solar System Explorer**</div>
+        <button class="toggle-mode" onclick="toggleMode()">🌓</button>
+    </nav>
+
+    <header>
+        <h1>Solar System Explorer</h1>
+        <p>Click a planet to learn more</p>
+    </header>
+
+    <div class="planet-grid" id="planetGrid">
+        <div class="planet-card" onclick="showArticle('mercury')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg" alt="Mercury" />
+            <h3>Mercury</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('venus')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg" alt="Venus" />
+            <h3>Venus</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('earth')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" alt="Earth" />
+            <h3>Earth</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('mars')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" alt="Mars" />
+            <h3>Mars</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('jupiter')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg" alt="Jupiter" />
+            <h3>Jupiter</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('saturn')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" alt="Saturn" />
+            <h3>Saturn</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('uranus')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" alt="Uranus" />
+            <h3>Uranus</h3>
+        </div>
+        <div class="planet-card" onclick="showArticle('neptune')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" alt="Neptune" />
+            <h3>Neptune</h3>
+        </div>
+    </div>
+
+    <div class="article-view" id="articleView">
+        <h2 id="articleTitle"></h2>
+        <div id="articleContent"></div>
+        <button class="back-btn" onclick="goBack()">← **Back to Planets**</button>
+    </div>
+
+    <script>
+        // 1. DATA: The articles object must be defined for the functions to work.
+        const articles = {
+            mercury: {
+                title: "Mercury – The Swift Planet",
+                content: `
+                    <p>Mercury is the closest planet to the Sun and the smallest among the eight major planets.</p>
+                    <p>It has a rocky, cratered surface that resembles our Moon, with no atmosphere to protect it from impacts.</p>
+                    <p>Temperatures on Mercury swing wildly, from scorching highs of 430°C to freezing lows of -180°C.</p>
+                    <p>Its thin exosphere is composed of oxygen, sodium, hydrogen, helium, and potassium.</p>
+                    <p>Mercury has no moons and no rings, making it a solitary traveler around the Sun.</p>
+                    <p>It completes an orbit in just 88 Earth days, the shortest year of any planet.</p>
+                    <p>Despite its proximity to the Sun, Mercury is not the hottest planet — Venus holds that title.</p>
+                    <p>Mercury’s slow rotation means a single day lasts about 59 Earth days.</p>
+                    <p>NASA’s MESSENGER mission revealed water ice in permanently shadowed craters near its poles.</p>
+                    <p>Mercury remains a fascinating world of extremes, mystery, and ancient scars.</p>
+                `
+            },
+            venus: {
+                title: "Venus – The Veiled Planet",
+                content: `
+                    <p>Venus is the second planet from the Sun and the hottest in the Solar System.</p>
+                    <p>Its thick atmosphere traps heat through a runaway greenhouse effect, reaching surface temperatures over 460°C.</p>
+                    <p>Venus rotates very slowly and in the opposite direction of most planets — a day lasts 243 Earth days.</p>
+                    <p>Its surface is hidden beneath clouds of sulfuric acid, making direct observation difficult.</p>
+                    <p>Radar mapping has revealed mountains, volcanoes, and vast plains.</p>
+                    <p>Venus has no moons and no magnetic field, unlike Earth.</p>
+                    <p>It’s often called Earth’s twin due to its similar size and composition.</p>
+                    <p>Despite this, Venus is hostile to life as we know it, with crushing pressure and acidic rain.</p>
+                    <p>Past missions like Magellan and Venera have studied its surface and atmosphere.</p>
+                    <p>Venus continues to intrigue scientists as a cautionary tale of climate gone wrong.</p>
+                `
+            },
+            earth: {
+                title: "Earth – Our Living Planet",
+                content: `
+                    <p>Earth is the third planet from the Sun and the only known world to support life.</p>
+                    <p>Its atmosphere is composed primarily of nitrogen and oxygen, making it breathable for humans and animals.</p>
+                    <p>About 71% of Earth's surface is covered in water, with vast oceans, rivers, and lakes that regulate climate and support ecosystems.</p>
+                    <p>Earth has a dynamic climate system, with weather patterns driven by solar energy, ocean currents, and atmospheric circulation.</p>
+                    <p>The planet's magnetic field shields it from harmful solar and cosmic radiation, protecting life and enabling technologies like GPS.</p>
+                    <p>Earth has one natural satellite—the Moon—which influences tides, stabilizes rotation, and has inspired exploration and mythology.</p>
+                    <p>Its biosphere includes millions of species, from microscopic organisms to complex mammals, forming intricate food webs and habitats.</p>
+                    <p>Human civilization has shaped the planet through agriculture, cities, industry, and culture, leaving both achievements and environmental challenges.</p>
+                    <p>Issues like climate change, deforestation, pollution, and biodiversity loss threaten ecosystems and require global cooperation to address.</p>
+                    <p>Earth remains a focal point for exploration, conservation, and scientific discovery, inspiring efforts to protect its future and understand our place in the universe.</p>
+                `
+            },
+            mars: {
+                title: "Mars – The Red Planet",
+                content: `
+                    <p>Mars is the fourth planet from the Sun and is known for its reddish appearance.</p>
+                    <p>The red color comes from iron oxide (rust) on its surface.</p>
+                    <p>Mars has polar ice caps, vast deserts, and the largest volcano in the Solar System—Olympus Mons.</p>
+                    <p>It also hosts Valles Marineris, a canyon system that dwarfs Earth's Grand Canyon.</p>
+                    <p>Scientists believe Mars once had liquid water and possibly microbial life.</p>
+                    <p>Today, its atmosphere is thin and mostly carbon dioxide, making it inhospitable to humans.</p>
+                    <p>Robotic missions like Perseverance and Curiosity explore its surface for signs of past life.</p>
+                    <p>Mars has two small moons: Phobos and Deimos, which may be captured asteroids.</p>
+                    <p>Future missions aim to send humans to Mars and establish research bases.</p>
+                    <p>Mars continues to captivate scientists and dreamers as a frontier for exploration.</p>
+                `
+            },
+            jupiter: {
+                title: "Jupiter – The Giant",
+                content: `
+                    <p>Jupiter is the fifth planet from the Sun and the largest in the Solar System.</p>
+                    <p>It’s a gas giant composed mostly of hydrogen and helium.</p>
+                    <p>Jupiter’s most famous feature is the Great Red Spot, a massive storm larger than Earth.</p>
+                    <p>It has over 90 known moons, including Ganymede—the largest moon in the Solar System.</p>
+                    <p>Jupiter’s magnetic field is the strongest of any planet and creates intense radiation belts.</p>
+                    <p>Its rapid rotation causes it to bulge at the equator and flatten at the poles.</p>
+                    <p>Jupiter has faint rings made of dust particles from its moons.</p>
+                    <p>It plays a protective role in the Solar System by deflecting comets and asteroids.</p>
+                    <p>NASA’s Juno mission is currently studying Jupiter’s atmosphere and magnetic field.</p>
+                    <p>Jupiter’s immense size and dynamic weather make it a fascinating object of study.</p>
+                `
+            },
+            saturn: {
+                title: "Saturn – The Ringed Wonder",
+                content: `
+                    <p>Saturn is the sixth planet from the Sun and the second-largest in the Solar System.</p>
+                    <p>It’s best known for its stunning ring system, made of ice, rock, and dust particles.</p>
+                    <p>Saturn is a gas giant composed mostly of hydrogen and helium, with no solid surface.</p>
+                    <p>Its atmosphere features fast winds and large storms, including a persistent hexagonal storm at its north pole.</p>
+                    <p>Saturn has at least 83 confirmed moons, including Titan, which has a thick atmosphere and methane lakes.</p>
+                    <p>The planet’s low density means it would float in water if a large enough ocean existed.</p>
+                    <p>Saturn’s magnetic field is weaker than Jupiter’s but still powerful and complex.</p>
+                    <p>NASA’s Cassini mission orbited Saturn for over 13 years, revealing incredible details about its rings and moons.</p>
+                    <p>Seasonal changes on Saturn occur slowly due to its long 29.5-year orbit around the Sun.</p>
+                    <p>Saturn remains a favorite target for astronomers and space enthusiasts alike.</p>
+                `
+            },
+            uranus: {
+                title: "Uranus – The Tilted Ice Giant",
+                content: `
+                    <p>Uranus is the seventh planet from the Sun and the third-largest by diameter.</p>
+                    <p>It’s classified as an ice giant due to its icy core and atmosphere rich in water, ammonia, and methane.</p>
+                    <p>Uranus has a pale blue color caused by methane gas absorbing red light.</p>
+                    <p>It rotates on its side, with an axial tilt of 98 degrees — likely due to a massive collision long ago.</p>
+                    <p>This extreme tilt causes unusual seasons that last over 20 years each.</p>
+                    <p>Uranus has 27 known moons, named after characters from Shakespeare and Alexander Pope.</p>
+                    <p>It also has faint rings, discovered in 1977, made of dark particles.</p>
+                    <p>Uranus has a cold atmosphere, with temperatures dropping below -220°C — the coldest in the Solar System.</p>
+                    <p>Only one spacecraft, Voyager 2, has visited Uranus, flying by in 1986.</p>
+                    <p>Future missions may explore Uranus in more detail to understand its unique tilt and interior.</p>
+                `
+            },
+            neptune: {
+                title: "Neptune – The Windy Blue Giant",
+                content: `
+                    <p>Neptune is the eighth and farthest known planet from the Sun in our Solar System.</p>
+                    <p>It’s an ice giant like Uranus, with a deep blue color due to methane in its atmosphere.</p>
+                    <p>Neptune has the fastest winds in the Solar System, reaching speeds over 2,000 km/h.</p>
+                    <p>Its atmosphere features large storms, including the Great Dark Spot, similar to Jupiter’s Great Red Spot.</p>
+                    <p>Neptune has 14 known moons, with Triton being the largest and geologically active.</p>
+                    <p>Triton orbits Neptune in a retrograde direction, suggesting it was captured from the Kuiper Belt.</p>
+                    <p>Neptune has a faint ring system composed of dust particles and ice.</p>
+                    <p>The planet’s internal heat source drives its dynamic weather patterns.</p>
+                    <p>Voyager 2 is the only spacecraft to have visited Neptune, flying by in 1989.</p>
+                    <p>Neptune remains a distant and mysterious world, inspiring curiosity about the outer reaches of our Solar System.</p>
+                `
+            }
+        };
+
+        // 2. FUNCTIONS: The interactive functions.
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function showArticle(key) {
+            // Get the data from the defined 'articles' object using the planet 'key'
+            const article = articles[key]; 
+            
+            // Check if the article data exists (a safeguard)
+            if (!article) {
+                console.error(`Article content not found for key: ${key}`);
+                return;
+            }
+
+            // 1. Hide the main grid view
+            document.getElementById('planetGrid').style.display = 'none';
+
+            // 2. Populate the article view with the correct content
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleContent').innerHTML = article.content;
+
+            // 3. Show the article view
+            document.getElementById('articleView').style.display = 'block';
+            
+            // Scroll to the top of the article for a better user experience
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() {
+            // 1. Hide the article view
+            document.getElementById('articleView').style.display = 'none';
+
+            // 2. Show the main grid view (using flex to respect the CSS layout)
+            document.getElementById('planetGrid').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
